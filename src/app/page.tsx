@@ -1,27 +1,70 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
+  const [showVideo, setShowVideo] = useState(false);
+
+  useEffect(() => {
+    // Deteksi mobile dan delay loading video
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // Untuk mobile, tunggu 3 detik sebelum load video
+      const timer = setTimeout(() => {
+        setShowVideo(true);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    } else {
+      // Desktop langsung show video
+      setShowVideo(true);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen font-poppins pt-24">
       {/* Hero Section with Video Background */}
       <section className="min-h-screen flex items-center justify-center px-4 -mt-24 relative overflow-hidden">
-        {/* Video Background */}
+        {/* Video Background dengan optimasi mobile */}
         <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            className="w-full h-full object-cover"
-          >
-            <source src="/background.mp4" type="video/mp4" />
-            {/* Fallback untuk browser yang tidak support video */}
-            <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900"></div>
-          </video>
-          {/* Dark overlay untuk readability */}
-          <div className="absolute inset-0 bg-black/40"></div>
+          {/* Fallback background image untuk loading dan mobile yang lambat */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/60 via-purple-900/40 to-indigo-900/60"></div>
+          
+          {/* Loading indicator untuk mobile */}
+          {!showVideo && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-white/60 text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white/60 mx-auto mb-2"></div>
+                <p className="text-sm">Loading experience...</p>
+              </div>
+            </div>
+          )}
+          
+          {/* Video hanya load ketika showVideo true */}
+          {showVideo && (
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className="w-full h-full object-cover opacity-0 transition-opacity duration-2000"
+              onLoadedData={(e) => {
+                e.currentTarget.style.opacity = '1';
+              }}
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            >
+              <source src="/background.mp4" type="video/mp4" />
+            </video>
+          )}
+          
+          {/* Dark overlay untuk readability - dikurangi opacity */}
+          <div className="absolute inset-0 bg-black/20"></div>
         </div>
 
         {/* Content */}

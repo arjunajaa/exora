@@ -165,22 +165,20 @@ export default function Product() {  const [activeCategory, setActiveCategory] =
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
-        </div>
-
-        {/* Category Filters */}
+        </div>        {/* Category Filters */}
         <div className="mb-12">
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-wrap gap-2 md:gap-4 justify-center">
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`px-6 py-3 rounded-full font-semibold text-white border-2 transition-all duration-300 backdrop-blur-lg ${getColorClasses(category.color, activeCategory === category.id)}`}
+                className={`px-3 py-2 md:px-6 md:py-3 rounded-full font-semibold text-white border-2 transition-all duration-300 backdrop-blur-lg text-sm md:text-base ${getColorClasses(category.color, activeCategory === category.id)}`}
               >
                 {category.name}
               </button>
             ))}
           </div>
-        </div>        {/* Products Grid */}
+        </div>{/* Products Grid */}
         {getFilteredProducts().length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-16">
             {getFilteredProducts().map((product) => (
